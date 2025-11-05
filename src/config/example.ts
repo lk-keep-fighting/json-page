@@ -56,6 +56,17 @@ export const exampleAdminConfig: AdminTablePageConfig = {
         url: "https://example.com/users/create",
         target: "_blank"
       }
+    }, {
+      id: "refresh-data",
+      label: "刷新数据",
+      scope: "global",
+      intent: "default",
+      behavior: {
+        type: "api",
+        method: "POST",
+        endpoint: "/api/users/refresh",
+        successMessage: "刷新成功"
+      }
     }
   ],
   filters: [
