@@ -2,6 +2,7 @@ import type { AnyBlockConfig, BlockConfigMap } from "../../types/registry";
 import { blockRegistry } from "../../lib/registry/block-registry";
 
 import "../blocks/admin-table";
+import "../blocks/data-chart";
 
 interface LowCodePageProps {
   config: AnyBlockConfig;

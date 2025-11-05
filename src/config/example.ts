@@ -1,4 +1,4 @@
-import type { AdminTablePageConfig } from "../components/renderer";
+import type { AdminTablePageConfig, DataChartBlockConfig } from "../components/renderer";
 
 export const exampleAdminConfig: AdminTablePageConfig = {
   type: "admin-table",
@@ -206,5 +206,37 @@ export const exampleAdminConfig: AdminTablePageConfig = {
       title: "还没有相关用户",
       description: "请调整筛选条件或创建新的用户"
     }
+  }
+};
+
+export const exampleChartConfig: DataChartBlockConfig = {
+  type: "data-chart",
+  title: "月度新增用户",
+  description: "展示最近 6 个月的新增用户数量趋势",
+  dataSource: {
+    type: "static",
+    data: [
+      { month: "5月", signups: 96 },
+      { month: "6月", signups: 142 },
+      { month: "7月", signups: 168 },
+      { month: "8月", signups: 154 },
+      { month: "9月", signups: 187 },
+      { month: "10月", signups: 205 }
+    ]
+  },
+  chart: {
+    type: "line",
+    xField: "month",
+    yField: "signups",
+    maxItems: 12,
+    color: "#2563eb",
+    valueFormatter: {
+      type: "number",
+      maximumFractionDigits: 0
+    }
+  },
+  emptyState: {
+    title: "暂无趋势数据",
+    description: "请检查数据源配置或稍后再试"
   }
 };
