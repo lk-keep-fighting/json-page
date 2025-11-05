@@ -1,4 +1,4 @@
-import type { AdminTablePageConfig } from "../components/lowcode";
+import type { AdminTablePageConfig } from "../components/renderer";
 
 export const exampleAdminConfig: AdminTablePageConfig = {
   type: "admin-table",

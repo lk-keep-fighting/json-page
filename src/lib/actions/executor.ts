@@ -1,11 +1,11 @@
-import { resolveActionPayload } from "./dataSource";
-import { resolveTemplateValue } from "./utils";
+import { resolveActionPayload } from "../data-sources/use-data-source";
+import { resolveTemplateValue } from "../utils/template";
 import type {
   ActionBaseConfig,
   ActionBehavior,
   ApiBehavior,
   LinkBehavior
-} from "./types";
+} from "../../types/blocks/admin-table";
 
 export interface ActionExecutionContext {
   row?: Record<string, any>;

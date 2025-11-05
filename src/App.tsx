@@ -1,4 +1,4 @@
-import { LowCodePage } from "./components/lowcode";
+import { LowCodePage } from "./components/renderer";
 import { exampleAdminConfig } from "./config/example";
 
 export default function App() {

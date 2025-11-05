@@ -1,3 +1,5 @@
+export { LowCodePage } from "./low-code-page";
+
 export type {
   AdminPageConfig,
   AdminTablePageConfig,
@@ -7,6 +9,5 @@ export type {
   GlobalActionConfig,
   RowActionConfig,
   TableColumnConfig
-} from "./types";
-
-export { LowCodePage } from "./LowCodePage";
+} from "../../types/blocks/admin-table";
+export type { AnyBlockConfig, BlockType } from "../../types/registry";

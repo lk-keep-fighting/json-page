@@ -5,8 +5,8 @@ import {
   type FilterConfig,
   type LoadParams,
   type SortDirection
-} from "./types";
-import { getValueByPath, resolveTemplateValue } from "./utils";
+} from "../../types/blocks/admin-table";
+import { getValueByPath, resolveTemplateValue } from "../utils/template";
 
 interface UseDataSourceOptions {
   config: DataSourceConfig;
