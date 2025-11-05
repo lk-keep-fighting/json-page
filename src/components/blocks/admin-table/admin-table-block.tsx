@@ -5,24 +5,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle
-} from "../ui/card";
-import { ActionBar } from "./ActionBar";
-import { AdminTable } from "./AdminTable";
-import { FilterBar } from "./FilterBar";
-import { buildBulkActionContext, executeAction } from "./actionExecutor";
-import { useDataSource } from "./dataSource";
+} from "../../ui/card";
+import { ActionBar } from "./action-bar";
+import { AdminTable } from "./admin-table";
+import { FilterBar } from "./filter-bar";
+import { buildBulkActionContext, executeAction } from "../../../lib/actions/executor";
+import { useDataSource } from "../../../lib/data-sources/use-data-source";
 import type {
   AdminTablePageConfig,
   BulkActionConfig,
   GlobalActionConfig,
   RowActionConfig
-} from "./types";
+} from "../../../types/blocks/admin-table";
 
-interface LowCodePageProps {
+interface AdminTableBlockProps {
   config: AdminTablePageConfig;
 }
 
-export function LowCodePage({ config }: LowCodePageProps) {
+export function AdminTableBlock({ config }: AdminTableBlockProps) {
   const { dataSource, table, filters = [], headerActions = [] } = config;
   const [filterValues, setFilterValues] = useState<Record<string, any>>(() => {
     const initial: Record<string, any> = {};
