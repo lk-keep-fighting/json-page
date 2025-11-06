@@ -66,7 +66,8 @@ export function FilterBar({ filters = [], values, onChange, onReset }: FilterBar
             );
           }
           case "boolean": {
-            const value = rawValue ?? "all";
+            const value =
+              rawValue === true ? "true" : rawValue === false ? "false" : rawValue ?? "all";
             return (
               <div key={filter.id} className="flex min-w-[220px] flex-col gap-2">
                 <label className="text-sm font-medium text-muted-foreground">

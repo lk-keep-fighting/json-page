@@ -7,7 +7,8 @@ import type {
   ApiBehavior,
   GlobalActionConfig,
   RowActionConfig,
-  TableColumnConfig
+  TableColumnConfig,
+  TableConfig
 } from "../../../types/blocks/admin-table";
 import type {
   CrudActionConfig,
@@ -310,14 +311,22 @@ function buildDefaultDeleteAction(
 
 export function DataManagementBlock({ config }: { config: DataManagementBlockConfig }) {
   const adminTableConfig = useMemo<AdminTablePageConfig>(() => {
-    const { crud, type: _ignored, headerActions: customHeaderActions = [], table, ...rest } = config;
+    const {
+      crud,
+      type: _ignored,
+      models: _ignoredModels,
+      headerActions: customHeaderActions = [],
+      table,
+      ...rest
+    } = config;
     const idField = crud?.idField ?? "id";
     const derivedBaseEndpoint =
       crud?.baseEndpoint ??
       (config.dataSource.type === "remote" ? config.dataSource.endpoint : undefined) ??
       DEFAULT_BASE_ENDPOINT;
     const resourceName = config.title ?? DEFAULT_RESOURCE_FALLBACK;
-    const columns = table.columns ?? [];
+    const baseTable: TableConfig = table ?? { columns: [] };
+    const columns = baseTable.columns ?? [];
 
     const createAction = buildDefaultCreateAction(crud?.create, columns, idField, derivedBaseEndpoint, resourceName);
     const updateAction = buildDefaultUpdateAction(crud?.update, columns, idField, derivedBaseEndpoint, resourceName);
@@ -333,7 +342,7 @@ export function DataManagementBlock({ config }: { config: DataManagementBlockCon
     const rowActions = [
       ...(updateAction ? [updateAction] : []),
       ...(deleteAction ? [deleteAction] : []),
-      ...(table.rowActions ?? []).filter((action) => !excludedRowIds.has(action.id))
+      ...(baseTable.rowActions ?? []).filter((action) => !excludedRowIds.has(action.id))
     ];
 
     return {
@@ -341,9 +350,9 @@ export function DataManagementBlock({ config }: { config: DataManagementBlockCon
       type: "admin-table",
       headerActions,
       table: {
-        ...table,
+        ...baseTable,
         rowActions,
-        bulkActions: table.bulkActions
+        bulkActions: baseTable.bulkActions
       }
     } satisfies AdminTablePageConfig;
   }, [config]);

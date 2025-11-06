@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,11 +18,13 @@ import {
   executeAction,
   type ActionExecutionContext
 } from "../../../lib/actions/executor";
+import { normalizeAdminTableConfig } from "../../../lib/models/admin-table";
 import { useDataSource } from "../../../lib/data-sources/use-data-source";
 import type {
   ActionBaseConfig,
   AdminTablePageConfig,
   BulkActionConfig,
+  FilterConfig,
   GlobalActionConfig,
   RowActionConfig
 } from "../../../types/blocks/admin-table";
@@ -31,24 +33,50 @@ interface AdminTableBlockProps {
   config: AdminTablePageConfig;
 }
 
-export function AdminTableBlock({ config }: AdminTableBlockProps) {
-  const { dataSource, table, filters = [], headerActions = [] } = config;
-  const [filterValues, setFilterValues] = useState<Record<string, any>>(() => {
-    const initial: Record<string, any> = {};
-    filters.forEach((filter) => {
-      if (filter.type === "boolean") {
-        initial[filter.id] = "all";
-      } else if (filter.type === "date-range") {
-        initial[filter.id] = { from: "", to: "" };
-      } else {
-        initial[filter.id] = "";
+function getInitialFilterValue(filter: FilterConfig) {
+  if (filter.defaultValue !== undefined) {
+    if (filter.type === "date-range") {
+      const value = filter.defaultValue;
+      if (value && typeof value === "object") {
+        const { from = "", to = "" } = value as { from?: string; to?: string };
+        return { from, to };
       }
-    });
-    return initial;
-  });
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        const normalized = String(value);
+        return { from: normalized, to: normalized };
+      }
+      return { from: "", to: "" };
+    }
+    return filter.defaultValue;
+  }
+
+  if (filter.type === "boolean") {
+    return "all";
+  }
+
+  if (filter.type === "date-range") {
+    return { from: "", to: "" };
+  }
+
+  return "";
+}
+
+function buildInitialFilterValues(filters: FilterConfig[]) {
+  return filters.reduce<Record<string, any>>((acc, filter) => {
+    acc[filter.id] = getInitialFilterValue(filter);
+    return acc;
+  }, {});
+}
+
+export function AdminTableBlock({ config }: AdminTableBlockProps) {
+  const normalizedConfig = useMemo(() => normalizeAdminTableConfig(config), [config]);
+  const { dataSource, table, filters, headerActions } = normalizedConfig;
+  const computeInitialFilters = useCallback(() => buildInitialFilterValues(filters), [filters]);
+  const defaultPageSize = table.pagination?.defaultPageSize ?? 10;
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(
-    table.pagination?.defaultPageSize ?? 10
+  const [pageSize, setPageSize] = useState(defaultPageSize);
+  const [filterValues, setFilterValues] = useState<Record<string, any>>(() =>
+    computeInitialFilters()
   );
   const [sortState, setSortState] = useState<{
     columnId: string;
@@ -81,6 +109,16 @@ export function AdminTableBlock({ config }: AdminTableBlockProps) {
     pageSize,
     sort: effectiveSort
   });
+
+  useEffect(() => {
+    setFilterValues(computeInitialFilters());
+    setPage(1);
+  }, [computeInitialFilters]);
+
+  useEffect(() => {
+    setPageSize(defaultPageSize);
+    setPage(1);
+  }, [defaultPageSize]);
 
   useEffect(() => {
     setSelectedRowIds([]);
@@ -165,17 +203,7 @@ export function AdminTableBlock({ config }: AdminTableBlockProps) {
   };
 
   const handleResetFilters = () => {
-    const resetValues: Record<string, any> = {};
-    filters.forEach((filter) => {
-      if (filter.type === "boolean") {
-        resetValues[filter.id] = "all";
-      } else if (filter.type === "date-range") {
-        resetValues[filter.id] = { from: "", to: "" };
-      } else {
-        resetValues[filter.id] = "";
-      }
-    });
-    setFilterValues(resetValues);
+    setFilterValues(computeInitialFilters());
     setPage(1);
   };
 

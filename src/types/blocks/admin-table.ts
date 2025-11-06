@@ -1,5 +1,12 @@
 export type Primitive = string | number | boolean | null;
 
+export type RangeValue = {
+  from?: string;
+  to?: string;
+};
+
+export type FilterDefaultValue = Primitive | RangeValue;
+
 export type FilterType = "text" | "select" | "date-range" | "number" | "boolean";
 
 export interface FilterBaseConfig {
@@ -8,6 +15,7 @@ export interface FilterBaseConfig {
   field: string;
   type: FilterType;
   placeholder?: string;
+  defaultValue?: FilterDefaultValue;
 }
 
 export interface TextFilterConfig extends FilterBaseConfig {
@@ -212,14 +220,76 @@ export interface RemoteDataSourceConfig {
 
 export type DataSourceConfig = StaticDataSourceConfig | RemoteDataSourceConfig;
 
+export interface TableViewModel {
+  type: "table-view";
+  dataSource: DataSourceConfig;
+  columns: TableColumnConfig[];
+  selectable?: boolean;
+  pagination?: PaginationConfig;
+  emptyState?: {
+    title: string;
+    description?: string;
+  };
+}
+
+export interface FilterFormModel {
+  id: string;
+  type: "filter-form";
+  filters: FilterConfig[];
+}
+
+export interface SubmissionFormModel {
+  id: string;
+  type: "submission-form";
+  form: ActionFormConfig;
+}
+
+interface DataOperationModelBase {
+  id: string;
+  type: "data-operation";
+  label: string;
+  intent?: ActionIntent;
+  icon?: string;
+  confirm?: ActionConfirmation;
+  behavior: ActionBehavior;
+  form?: ActionFormConfig;
+  formRef?: string;
+}
+
+export interface GlobalOperationModel extends DataOperationModelBase {
+  scope: "global";
+}
+
+export interface RowOperationModel extends DataOperationModelBase {
+  scope: "row";
+}
+
+export interface BulkOperationModel extends DataOperationModelBase {
+  scope: "bulk";
+  requiresSelection?: boolean;
+}
+
+export type DataOperationModel =
+  | GlobalOperationModel
+  | RowOperationModel
+  | BulkOperationModel;
+
+export interface AdminTableModelsConfig {
+  view: TableViewModel;
+  filterForms?: FilterFormModel[];
+  submissionForms?: SubmissionFormModel[];
+  operations?: DataOperationModel[];
+}
+
 export interface AdminTablePageConfig {
   type: "admin-table";
   title?: string;
   description?: string;
-  dataSource: DataSourceConfig;
+  dataSource?: DataSourceConfig;
   filters?: FilterConfig[];
   headerActions?: GlobalActionConfig[];
-  table: TableConfig;
+  table?: TableConfig;
+  models?: AdminTableModelsConfig;
 }
 
 export type AdminPageConfig = AdminTablePageConfig;

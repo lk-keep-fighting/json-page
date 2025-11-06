@@ -74,6 +74,40 @@ export const exampleAdminConfig: AdminTablePageConfig = {
 
 > 运行时会根据配置自动创建筛选条、数据表格、分页、操作按钮等。
 
+### 模型驱动配置
+
+`AdminTablePageConfig` 新增 `models` 字段，可在完全 JSON 驱动的场景下复用基础渲染能力：
+
+- **表格视图模型 (`TableViewModel`)**：描述数据源、列配置、分页及空状态。
+- **表单模型**：
+  - `FilterFormModel`：定义筛选表单，支持 `defaultValue` 初始化筛选条件。
+  - `SubmissionFormModel`：定义可复用的数据提交表单。
+- **数据操作模型 (`DataOperationModel`)**：抽象全局 / 行 / 批量动作，支持内联表单或通过 `formRef` 关联提交表单模型。
+
+此外，筛选项 (`FilterConfig`) 现在支持 `defaultValue` 字段，可在模型或传统配置中设定初始值。
+
+```ts
+const config: AdminTablePageConfig = {
+  type: "admin-table",
+  models: {
+    view: { /* TableViewModel */ },
+    filterForms: [{ /* FilterFormModel */ }],
+    submissionForms: [{ id: "assign-order-form", form: { /* ActionFormConfig */ } }],
+    operations: [
+      {
+        id: "assign-order",
+        type: "data-operation",
+        scope: "row",
+        formRef: "assign-order-form",
+        behavior: { type: "api", method: "POST", endpoint: "/api/orders/{{row.id}}/assign" }
+      }
+    ]
+  }
+};
+```
+
+> 可以参考 `src/config/example.ts` 中的 `exampleModelDrivenConfig`，了解表格视图、筛选表单、数据操作模型的组合方式。
+
 ## 动态模板占位
 
 - `{{row.id}}`：当前行的字段
