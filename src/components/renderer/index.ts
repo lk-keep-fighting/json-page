@@ -16,4 +16,10 @@ export type {
   ChartValueFormatterConfig,
   DataChartBlockConfig
 } from "../../types/blocks/data-chart";
+export type {
+  CrudActionApiConfig,
+  CrudActionConfig,
+  DataManagementBlockConfig,
+  DataManagementCrudConfig
+} from "../../types/blocks/data-management";
 export type { AnyBlockConfig, BlockType } from "../../types/registry";

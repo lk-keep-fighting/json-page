@@ -1,4 +1,8 @@
-import type { AdminTablePageConfig, DataChartBlockConfig } from "../components/renderer";
+import type {
+  AdminTablePageConfig,
+  DataChartBlockConfig,
+  DataManagementBlockConfig
+} from "../components/renderer";
 
 export const exampleAdminConfig: AdminTablePageConfig = {
   type: "admin-table",
@@ -333,5 +337,179 @@ export const exampleChartConfig: DataChartBlockConfig = {
   emptyState: {
     title: "暂无趋势数据",
     description: "请检查数据源配置或稍后再试"
+  }
+};
+
+export const exampleDataManagementConfig: DataManagementBlockConfig = {
+  type: "data-management",
+  title: "商品管理",
+  description: "展示默认 CRUD 能力的数据管理组件示例",
+  dataSource: {
+    type: "static",
+    data: [
+      {
+        id: "p-1001",
+        name: "智能手表",
+        category: "wearable",
+        price: 1299,
+        stock: 42,
+        status: "on-sale",
+        updatedAt: "2024-10-01T09:30:00Z"
+      },
+      {
+        id: "p-1002",
+        name: "降噪耳机",
+        category: "audio",
+        price: 899,
+        stock: 12,
+        status: "on-sale",
+        updatedAt: "2024-09-26T14:15:00Z"
+      },
+      {
+        id: "p-1003",
+        name: "机械键盘",
+        category: "peripheral",
+        price: 699,
+        stock: 0,
+        status: "sold-out",
+        updatedAt: "2024-09-18T08:45:00Z"
+      },
+      {
+        id: "p-1004",
+        name: "无线鼠标",
+        category: "peripheral",
+        price: 249,
+        stock: 58,
+        status: "draft",
+        updatedAt: "2024-09-20T11:05:00Z"
+      }
+    ]
+  },
+  filters: [
+    {
+      id: "keyword",
+      label: "关键字",
+      field: "name",
+      type: "text",
+      placeholder: "输入商品名称"
+    },
+    {
+      id: "status",
+      label: "上架状态",
+      field: "status",
+      type: "select",
+      options: [
+        { label: "在售", value: "on-sale" },
+        { label: "草稿", value: "draft" },
+        { label: "售罄", value: "sold-out" }
+      ]
+    },
+    {
+      id: "category",
+      label: "商品类别",
+      field: "category",
+      type: "select",
+      options: [
+        { label: "穿戴设备", value: "wearable" },
+        { label: "音频设备", value: "audio" },
+        { label: "电脑周边", value: "peripheral" }
+      ]
+    }
+  ],
+  crud: {
+    baseEndpoint: "/api/products",
+    create: {
+      label: "新增商品",
+      api: {
+        successMessage: "新增商品成功"
+      }
+    },
+    update: {
+      label: "编辑",
+      intent: "ghost",
+      api: {
+        successMessage: "更新商品成功"
+      }
+    },
+    delete: {
+      label: "删除",
+      intent: "destructive",
+      confirm: {
+        title: "确定要删除该商品吗？",
+        description: "删除后将无法恢复，请谨慎操作。"
+      },
+      api: {
+        successMessage: "删除商品成功"
+      }
+    }
+  },
+  table: {
+    selectable: true,
+    pagination: {
+      defaultPageSize: 5,
+      pageSizeOptions: [5, 10, 20]
+    },
+    columns: [
+      {
+        id: "product-id",
+        label: "商品编号",
+        dataIndex: "id"
+      },
+      {
+        id: "product-name",
+        label: "商品名称",
+        dataIndex: "name",
+        sortable: true
+      },
+      {
+        id: "product-category",
+        label: "商品类别",
+        dataIndex: "category",
+        renderType: "badge",
+        valueMapping: [
+          { value: "wearable", label: "穿戴设备" },
+          { value: "audio", label: "音频设备" },
+          { value: "peripheral", label: "电脑周边" }
+        ]
+      },
+      {
+        id: "product-price",
+        label: "售价",
+        dataIndex: "price",
+        renderType: "currency",
+        currency: {
+          currency: "CNY"
+        },
+        align: "right"
+      },
+      {
+        id: "product-stock",
+        label: "库存",
+        dataIndex: "stock",
+        align: "right"
+      },
+      {
+        id: "product-status",
+        label: "上架状态",
+        dataIndex: "status",
+        renderType: "badge",
+        valueMapping: [
+          { value: "on-sale", label: "在售", variant: "success" },
+          { value: "draft", label: "草稿", variant: "secondary" },
+          { value: "sold-out", label: "售罄", variant: "destructive" }
+        ]
+      },
+      {
+        id: "product-updated",
+        label: "最近更新",
+        dataIndex: "updatedAt",
+        renderType: "date",
+        sortable: true
+      }
+    ],
+    emptyState: {
+      title: "暂无商品数据",
+      description: "请通过新增操作创建第一条记录"
+    }
   }
 };
