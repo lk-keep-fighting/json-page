@@ -6,10 +6,12 @@ import {
   CardHeader,
   CardTitle
 } from "../../ui/card";
-import { ActionBar } from "./action-bar";
-import { AdminTable } from "./admin-table";
-import { FilterBar } from "./filter-bar";
-import { ActionFormDialog } from "./action-form-dialog";
+import {
+  ActionBar,
+  ActionFormDialog,
+  AdminTable,
+  FilterBar
+} from "../shared/data-table";
 import {
   buildActionTemplateContext,
   buildBulkActionContext,

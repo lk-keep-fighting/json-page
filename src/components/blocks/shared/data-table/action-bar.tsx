@@ -1,5 +1,5 @@
-import { Button } from "../../ui/button";
-import type { ActionIntent, GlobalActionConfig } from "../../../types/blocks/admin-table";
+import { Button } from "../../../ui/button";
+import type { ActionIntent, GlobalActionConfig } from "../../../../types/blocks/admin-table";
 
 interface ActionBarProps {
   actions?: GlobalActionConfig[];
