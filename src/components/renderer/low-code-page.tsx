@@ -3,6 +3,7 @@ import { blockRegistry } from "../../lib/registry/block-registry";
 
 import "../blocks/admin-table";
 import "../blocks/data-chart";
+import "../blocks/data-management";
 
 interface LowCodePageProps {
   config: AnyBlockConfig;
