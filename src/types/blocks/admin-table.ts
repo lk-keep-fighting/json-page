@@ -85,6 +85,55 @@ export interface ActionConfirmation {
   description?: string;
 }
 
+export type ActionFormFieldType = "text" | "number" | "textarea" | "select";
+
+export interface ActionFormFieldBase {
+  id: string;
+  label: string;
+  type: ActionFormFieldType;
+  placeholder?: string;
+  description?: string;
+  required?: boolean;
+  defaultValue?: Primitive;
+}
+
+export interface TextFormFieldConfig extends ActionFormFieldBase {
+  type: "text";
+  maxLength?: number;
+}
+
+export interface TextareaFormFieldConfig extends ActionFormFieldBase {
+  type: "textarea";
+  rows?: number;
+  maxLength?: number;
+}
+
+export interface NumberFormFieldConfig extends ActionFormFieldBase {
+  type: "number";
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+export interface SelectFormFieldConfig extends ActionFormFieldBase {
+  type: "select";
+  options: SelectFilterOption[];
+}
+
+export type ActionFormFieldConfig =
+  | TextFormFieldConfig
+  | TextareaFormFieldConfig
+  | NumberFormFieldConfig
+  | SelectFormFieldConfig;
+
+export interface ActionFormConfig {
+  title?: string;
+  description?: string;
+  submitLabel?: string;
+  cancelLabel?: string;
+  fields: ActionFormFieldConfig[];
+}
+
 export interface LinkBehavior {
   type: "link";
   url: string;
@@ -111,6 +160,7 @@ export interface ActionBaseConfig {
   icon?: string;
   confirm?: ActionConfirmation;
   behavior: ActionBehavior;
+  form?: ActionFormConfig;
 }
 
 export interface GlobalActionConfig extends ActionBaseConfig {

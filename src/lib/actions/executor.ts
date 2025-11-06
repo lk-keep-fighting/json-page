@@ -13,6 +13,7 @@ export interface ActionExecutionContext {
   rows?: Record<string, any>[];
   rowIds?: string[];
   filters?: Record<string, unknown>;
+  formValues?: Record<string, unknown>;
 }
 
 export interface ExecuteActionOptions {
@@ -25,14 +26,17 @@ function ensureArray(value: Record<string, any> | Record<string, any>[] | undefi
   return Array.isArray(value) ? value : [value];
 }
 
-function buildTemplateContext(context: ActionExecutionContext) {
+export function buildActionTemplateContext(context: ActionExecutionContext) {
   return {
     ...(context.row ?? {}),
+    ...(context.formValues ?? {}),
     row: context.row,
     rowId: context.rowId,
     rows: context.rows,
     rowIds: context.rowIds,
-    filters: context.filters
+    filters: context.filters,
+    form: context.formValues,
+    formValues: context.formValues
   };
 }
 
@@ -40,7 +44,7 @@ async function handleApiBehavior(
   behavior: ApiBehavior,
   context: ActionExecutionContext
 ) {
-  const templateContext = buildTemplateContext(context);
+  const templateContext = buildActionTemplateContext(context);
 
   const endpoint = resolveTemplateValue(behavior.endpoint, templateContext) as string;
 
@@ -79,7 +83,7 @@ function handleLinkBehavior(
   context: ActionExecutionContext
 ) {
   if (typeof window === "undefined") return;
-  const templateContext = buildTemplateContext(context);
+  const templateContext = buildActionTemplateContext(context);
   const targetUrl = resolveTemplateValue(behavior.url, templateContext) as string;
   if (behavior.target === "_blank") {
     window.open(targetUrl, "_blank", "noopener,noreferrer");
