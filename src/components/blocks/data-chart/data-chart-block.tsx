@@ -66,6 +66,7 @@ export function DataChartBlock({ config }: DataChartBlockProps) {
     xField,
     yField,
     color = DEFAULT_COLOR,
+    colors,
     height = 260,
     maxItems = 12,
     valueFormatter,
@@ -136,6 +137,7 @@ export function DataChartBlock({ config }: DataChartBlockProps) {
             items={items}
             height={chartHeight}
             color={color}
+            colors={colors}
             formatValue={formatValue}
           />
         )}

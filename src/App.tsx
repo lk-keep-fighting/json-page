@@ -2,6 +2,7 @@ import { LowCodePage } from "./components/renderer";
 import {
   exampleAdminConfig,
   exampleChartConfig,
+  examplePieChartConfig,
   exampleDataManagementConfig
 } from "./config/example";
 
@@ -12,6 +13,7 @@ export default function App() {
         <LowCodePage config={exampleDataManagementConfig} />
         <LowCodePage config={exampleAdminConfig} />
         <LowCodePage config={exampleChartConfig} />
+        <LowCodePage config={examplePieChartConfig} />
       </div>
     </div>
   );

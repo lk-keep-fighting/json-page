@@ -324,7 +324,7 @@ export const exampleChartConfig: DataChartBlockConfig = {
     ]
   },
   chart: {
-    type: "line",
+    type: "area",
     xField: "month",
     yField: "signups",
     maxItems: 12,
@@ -336,6 +336,37 @@ export const exampleChartConfig: DataChartBlockConfig = {
   },
   emptyState: {
     title: "暂无趋势数据",
+    description: "请检查数据源配置或稍后再试"
+  }
+};
+
+export const examplePieChartConfig: DataChartBlockConfig = {
+  type: "data-chart",
+  title: "用户来源占比",
+  description: "展示最近 30 天不同渠道的用户占比",
+  dataSource: {
+    type: "static",
+    data: [
+      { id: "channel-organic", channel: "自然搜索", users: 420 },
+      { id: "channel-ads", channel: "广告投放", users: 310 },
+      { id: "channel-social", channel: "社交媒体", users: 210 },
+      { id: "channel-referral", channel: "推荐邀请", users: 160 }
+    ]
+  },
+  chart: {
+    type: "doughnut",
+    xField: "channel",
+    yField: "users",
+    color: "#6366f1",
+    colors: ["#6366f1", "#22d3ee", "#34d399", "#f97316"],
+    height: 280,
+    valueFormatter: {
+      type: "number",
+      maximumFractionDigits: 0
+    }
+  },
+  emptyState: {
+    title: "暂无渠道数据",
     description: "请检查数据源配置或稍后再试"
   }
 };

@@ -1,6 +1,6 @@
 import type { DataSourceConfig, SortDirection } from "./admin-table";
 
-export type ChartType = "bar" | "line";
+export type ChartType = "bar" | "line" | "area" | "pie" | "doughnut";
 
 export interface ChartSortConfig {
   field: string;
@@ -21,6 +21,7 @@ export interface ChartConfig {
   yField: string;
   sort?: ChartSortConfig;
   color?: string;
+  colors?: string[];
   height?: number;
   maxItems?: number;
   valueFormatter?: ChartValueFormatterConfig;
