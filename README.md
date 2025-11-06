@@ -1,148 +1,127 @@
 # React + shadcn Low-code Admin Framework
 
-本项目实现了一个基于 **React** 与 **shadcn 风格组件库** 的低代码中后台页面引擎，能够通过 JSON 配置快速渲染常见的后台管理页（带筛选、表格、行/批量操作等能力）。
+本项目实现了一个基于 **React** 与 **shadcn 风格组件库** 的低代码中后台页面引擎，可通过纯 JSON 配置渲染具备筛选、分页、表单与多种数据操作能力的管理页面。当前聚焦于「表格中心」的场景，并提供了模型化的配置层，方便未来对接页面设计器或远程配置服务。
 
-## 功能特点
+## 核心能力
 
-- **JSON 驱动**：通过结构化配置描述数据源、筛选项、表格列、操作按钮等，即可渲染完整页面。
-- **数据源抽象**：支持静态数组与远程接口两种类型，内置分页、排序、筛选映射能力。
-- **丰富交互**：
-  - 全局操作、行操作、批量操作，可配置 API 调用或外链行为；
-  - 筛选条件支持文本、下拉、布尔、时间区间等常见类型；
-  - 表格列支持 badge、布尔、日期、货币等多种渲染方式；
-  - 内置分页、排序、勾选、空状态与加载/失败态展示。
-- **模板占位**：接口地址、请求体字段可使用 `{{variable}}` 占位符动态注入上下文（当前行、选中行、筛选条件等）。
+- **完全 JSON 驱动**：使用 `AdminTablePageConfig` 即可描述数据源、表格、筛选器、动作按钮等页面元素。
+- **模型化配置层**：通过 `models` 字段定义表格视图、筛选表单、提交表单与数据操作模型，运行时由 `src/lib/models/admin-table.ts` 统一归一化。
+- **灵活的数据源抽象**：内置静态数据与远程接口两种类型，支持分页、排序、筛选映射、响应字段映射等能力。
+- **多样的交互与渲染**：
+  - 全局、行级、批量操作均可配置 API 调用或外链行为，支持确认提醒与弹窗表单；
+  - 筛选器涵盖文本、下拉、布尔与日期区间，支持 `defaultValue` 预设；
+  - 表格列支持排序、对齐、货币/日期渲染、Badge 映射、自定义宽度等。
+- **模板占位符系统**：接口地址、请求体、跳转链接均可通过 `{{ }}` 模板访问上下文（当前行、选中行、筛选条件、表单输入等）。
+
+## 技术栈
+
+- React 18 + Vite + TypeScript
+- Tailwind CSS + shadcn/ui 风格组件
+- 状态与数据逻辑以 React Hooks + 纯函数实现，便于在设计器或微前端环境中复用
+
+## 配置驱动架构
+
+`AdminTablePageConfig` 是页面渲染的入口类型。框架同时兼容传统的扁平配置与全新的模型驱动写法：
+
+### 基础配置（兼容模式）
+
+```ts
+const config: AdminTablePageConfig = {
+  type: "admin-table",
+  title: "用户管理",
+  dataSource: { type: "static", data: [...] },
+  filters: [...],
+  headerActions: [...],
+  table: {
+    columns: [...],
+    rowActions: [...],
+    bulkActions: [...],
+    pagination: { defaultPageSize: 10 }
+  }
+};
+```
+
+### 完全模型驱动
+
+```ts
+const config: AdminTablePageConfig = {
+  type: "admin-table",
+  title: "订单中心（模型驱动）",
+  models: {
+    view: {
+      type: "table-view",
+      dataSource: { type: "remote", endpoint: "/api/orders" },
+      columns: [...],
+      pagination: { defaultPageSize: 20 }
+    },
+    filterForms: [{ id: "order-filter", type: "filter-form", filters: [...] }],
+    submissionForms: [{ id: "bulk-close", type: "submission-form", form: {...} }],
+    operations: [
+      { id: "refresh", type: "data-operation", scope: "global", behavior: {...} },
+      { id: "assign", type: "data-operation", scope: "row", formRef: "assign-form", behavior: {...} }
+    ]
+  }
+};
+```
+
+> 归一化规则会将模型层定义的数据与兼容模式下的字段合并，允许在渐进式改造中复用既有配置。
+
+更多示例见 `src/config/example.ts` 中的 `exampleAdminConfig` 与 `exampleModelDrivenConfig`。
 
 ## 目录结构
 
 ```
 .
 ├── src
-│   ├── App.tsx                 // 示例应用入口
-│   ├── main.tsx                // Vite 入口文件
-│   ├── index.css               // Tailwind & 主题变量
+│   ├── App.tsx                        // 示例页面入口
+│   ├── main.tsx                       // Vite 挂载入口
+│   ├── config/
+│   │   └── example.ts                // 示例 JSON 配置集合
 │   ├── components
-│   │   ├── lowcode             // 低代码核心能力
-│   │   │   ├── AdminTable.tsx
-│   │   │   ├── ActionBar.tsx
-│   │   │   ├── FilterBar.tsx
-│   │   │   ├── LowCodePage.tsx
-│   │   │   ├── actionExecutor.ts
-│   │   │   ├── dataSource.ts
-│   │   │   ├── types.ts
-│   │   │   └── utils.ts
-│   │   └── ui                  // 复刻 shadcn 风格组件
-│   │       ├── badge.tsx
-│   │       ├── button.tsx
-│   │       ├── card.tsx
-│   │       ├── checkbox.tsx
-│   │       ├── input.tsx
-│   │       ├── select.tsx
-│   │       ├── spinner.tsx
-│   │       └── table.tsx
-│   ├── config
-│   │   └── example.ts          // 示例 JSON 配置
-│   └── lib
-│       └── cn.ts
-├── index.html
-├── package.json
-└── tailwind.config.ts
+│   │   ├── blocks
+│   │   │   ├── admin-table/          // AdminTable 页面区块
+│   │   │   ├── data-chart/           // 其他示例区块
+│   │   │   ├── data-management/      // 其他示例区块
+│   │   │   └── shared/data-table/    // 表格、筛选、动作等通用组件
+│   │   ├── renderer/                 // JSON 渲染器入口（按区块类型分发）
+│   │   └── ui/                       // 基于 shadcn 的基础 UI
+│   ├── lib
+│   │   ├── actions/                  // 动作执行与模板上下文
+│   │   ├── data-sources/             // 数据源 Hook 与工具
+│   │   ├── models/                   // 配置归一化逻辑
+│   │   └── utils/                    // 公共工具函数
+│   └── types/                        // TypeScript 类型声明
+├── doc/
+│   └── 低代码前端框架开发规范.md     // 深入的模型与规范说明
+├── README.md
+└── package.json
 ```
 
-## JSON 配置示例
+## 模板占位符
 
-`src/config/example.ts` 展示了一个用户管理页面的完整配置：
+渲染引擎会在动作执行与请求构建时注入以下上下文：
 
-```ts
-export const exampleAdminConfig: AdminTablePageConfig = {
-  type: "admin-table",
-  title: "用户管理",
-  dataSource: {
-    type: "static",
-    data: [...] // 也可以配置远程接口
-  },
-  headerActions: [...],
-  filters: [...],
-  table: {
-    selectable: true,
-    columns: [...],
-    rowActions: [...],
-    bulkActions: [...]
-  }
-};
+| 占位符 | 含义 |
+| ------ | ---- |
+| `{{row}}` / `{{row.xxx}}` | 当前行数据（行级操作、表单提交时可用） |
+| `{{rowId}}` | 当前行主键，自动从 `id`/`key`/`uuid` 推断 |
+| `{{rows}}` | 批量操作时选中的行数组 |
+| `{{rowIds}}` | 批量操作时选中的行主键数组 |
+| `{{filters.xxx}}` | 当前筛选条件值 |
+| `{{formValues.xxx}}` | 弹窗表单提交的字段值 |
+
+这些模板可应用于 API `endpoint`、`bodyTemplate`、外链 `url` 等字段，实现动态注入。
+
+## 快速开始
+
+```bash
+npm install
+npm run dev
 ```
 
-> 运行时会根据配置自动创建筛选条、数据表格、分页、操作按钮等。
+浏览器访问 `http://localhost:5173`，即可预览示例页面。修改 `src/config/example.ts` 或引入自定义 JSON 配置即可渲染新的管理页面。
 
-### 模型驱动配置
+## 深入文档
 
-`AdminTablePageConfig` 新增 `models` 字段，可在完全 JSON 驱动的场景下复用基础渲染能力：
-
-- **表格视图模型 (`TableViewModel`)**：描述数据源、列配置、分页及空状态。
-- **表单模型**：
-  - `FilterFormModel`：定义筛选表单，支持 `defaultValue` 初始化筛选条件。
-  - `SubmissionFormModel`：定义可复用的数据提交表单。
-- **数据操作模型 (`DataOperationModel`)**：抽象全局 / 行 / 批量动作，支持内联表单或通过 `formRef` 关联提交表单模型。
-
-此外，筛选项 (`FilterConfig`) 现在支持 `defaultValue` 字段，可在模型或传统配置中设定初始值。
-
-```ts
-const config: AdminTablePageConfig = {
-  type: "admin-table",
-  models: {
-    view: { /* TableViewModel */ },
-    filterForms: [{ /* FilterFormModel */ }],
-    submissionForms: [{ id: "assign-order-form", form: { /* ActionFormConfig */ } }],
-    operations: [
-      {
-        id: "assign-order",
-        type: "data-operation",
-        scope: "row",
-        formRef: "assign-order-form",
-        behavior: { type: "api", method: "POST", endpoint: "/api/orders/{{row.id}}/assign" }
-      }
-    ]
-  }
-};
-```
-
-> 可以参考 `src/config/example.ts` 中的 `exampleModelDrivenConfig`，了解表格视图、筛选表单、数据操作模型的组合方式。
-
-## 动态模板占位
-
-- `{{row.id}}`：当前行的字段
-- `{{rowId}}`：当前行的主键（从 `id`/`key`/`uuid` 自动推断）
-- `{{rows}}`：批量操作中选中的行数据数组
-- `{{rowIds}}`：选中的行主键数组
-- `{{filters.keyword}}`：当前的筛选条件
-
-这些占位符可用于接口地址与请求体，例如：
-
-```ts
-{
-  behavior: {
-    type: "api",
-    method: "POST",
-    endpoint: "/api/users/{{rowId}}/disable",
-    bodyTemplate: {
-      reason: "批量禁用",
-      filterKeyword: "{{filters.keyword}}"
-    }
-  }
-}
-```
-
-## 开发说明
-
-1. 安装依赖并启动开发服务器：
-
-   ```bash
-   npm install
-   npm run dev
-   ```
-
-2. 打开浏览器访问 `http://localhost:5173` 查看示例页面。
-
-3. 根据业务需求修改或新增 JSON 配置，即可快速生成新的后台页面。
-
-> **提示**：在真实项目中可以将配置存储在数据库或远程服务，结合权限与数据接口，实现真正的低代码中后台搭建能力。
+- [doc/低代码前端框架开发规范.md](doc/%E4%BD%8E%E4%BB%A3%E7%A0%81%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83.md)：详细记录了数据模型、配置字段、模板上下文以及扩展约定。
+- `src/types/blocks/admin-table.ts`：完整的 TypeScript 类型定义，可作为服务端或设计器的 Schema 依据。
