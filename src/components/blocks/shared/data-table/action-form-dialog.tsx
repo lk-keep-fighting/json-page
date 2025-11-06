@@ -1,9 +1,9 @@
 import type { FormEvent, MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Select } from "../../ui/select";
-import { resolveTemplateValue } from "../../../lib/utils/template";
+import { Button } from "../../../ui/button";
+import { Input } from "../../../ui/input";
+import { Select } from "../../../ui/select";
+import { resolveTemplateValue } from "../../../../lib/utils/template";
 import type {
   ActionFormConfig,
   ActionFormFieldConfig,
@@ -11,7 +11,7 @@ import type {
   SelectFormFieldConfig,
   TextFormFieldConfig,
   TextareaFormFieldConfig
-} from "../../../types/blocks/admin-table";
+} from "../../../../types/blocks/admin-table";
 
 interface ActionFormDialogProps {
   open: boolean;

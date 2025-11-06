@@ -1,8 +1,8 @@
 import type { ChangeEvent } from "react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Select } from "../../ui/select";
-import type { FilterConfig } from "../../../types/blocks/admin-table";
+import { Button } from "../../../ui/button";
+import { Input } from "../../../ui/input";
+import { Select } from "../../../ui/select";
+import type { FilterConfig } from "../../../../types/blocks/admin-table";
 
 interface FilterBarProps {
   filters?: FilterConfig[];

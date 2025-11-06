@@ -1,7 +1,7 @@
-import { Badge } from "../../ui/badge";
-import { Button } from "../../ui/button";
-import { Checkbox } from "../../ui/checkbox";
-import { Spinner } from "../../ui/spinner";
+import { Badge } from "../../../ui/badge";
+import { Button } from "../../../ui/button";
+import { Checkbox } from "../../../ui/checkbox";
+import { Spinner } from "../../../ui/spinner";
 import {
   Table,
   TableBody,
@@ -9,15 +9,15 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from "../../ui/table";
-import { getValueByPath } from "../../../lib/utils/template";
+} from "../../../ui/table";
+import { getValueByPath } from "../../../../lib/utils/template";
 import type {
   BulkActionConfig,
   PaginationConfig,
   RowActionConfig,
   SortDirection,
   TableColumnConfig
-} from "../../../types/blocks/admin-table";
+} from "../../../../types/blocks/admin-table";
 
 interface SortState {
   columnId: string;
