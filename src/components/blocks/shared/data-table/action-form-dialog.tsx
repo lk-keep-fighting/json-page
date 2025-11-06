@@ -3,7 +3,9 @@ import type { ChangeEvent, FormEvent, MouseEvent } from "react";
 import { Button } from "../../../ui/button";
 import { Checkbox } from "../../../ui/checkbox";
 import { Input } from "../../../ui/input";
+import { Radio } from "../../../ui/radio";
 import { Select } from "../../../ui/select";
+import { Textarea } from "../../../ui/textarea";
 import { resolveTemplateValue } from "../../../../lib/utils/template";
 import type {
   ActionFormConfig,
@@ -349,15 +351,14 @@ export function ActionFormDialog({
     if (isTextareaField(field)) {
       const stringValue = typeof value === "string" ? value : "";
       return (
-        <textarea
+        <Textarea
           id={field.id}
           value={stringValue}
           onChange={(event) => updateValue(field, event.target.value)}
           placeholder={field.placeholder}
-          rows={field.rows ?? 4}
+          rows={field.rows}
           maxLength={field.maxLength}
           disabled={submitting}
-          className="min-h-[96px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
       );
     }
@@ -424,15 +425,13 @@ export function ActionFormDialog({
             const optionId = `${field.id}-${index}`;
             return (
               <label key={optionId} htmlFor={optionId} className="flex items-center gap-2 text-sm">
-                <input
+                <Radio
                   id={optionId}
-                  type="radio"
                   name={field.id}
                   value={optionIndex}
                   checked={stringValue === optionIndex}
-                  onChange={() => updateValue(field, optionIndex)}
+                  onChange={(event) => updateValue(field, event.target.value)}
                   disabled={submitting}
-                  className="h-4 w-4 border border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 />
                 <span className="text-foreground">{option.label}</span>
               </label>
