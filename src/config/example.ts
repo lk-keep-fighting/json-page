@@ -4,6 +4,344 @@ import type {
   DataManagementBlockConfig
 } from "../components/renderer";
 
+export const exampleModelDrivenConfig: AdminTablePageConfig = {
+  type: "admin-table",
+  title: "订单中心（模型驱动）",
+  description: "通过数据模型定义表格、筛选、动作与表单的示例配置",
+  models: {
+    view: {
+      type: "table-view",
+      dataSource: {
+        type: "static",
+        data: [
+          {
+            id: "ORD-1001",
+            customer: "张三",
+            status: "pending",
+            amount: 289.9,
+            channel: "线上商城",
+            createdAt: "2024-10-12T09:20:00Z",
+            assignee: "王强"
+          },
+          {
+            id: "ORD-1002",
+            customer: "李四",
+            status: "processing",
+            amount: 1899,
+            channel: "APP 下单",
+            createdAt: "2024-10-11T11:05:00Z",
+            assignee: "赵敏"
+          },
+          {
+            id: "ORD-1003",
+            customer: "王五",
+            status: "completed",
+            amount: 520,
+            channel: "线下门店",
+            createdAt: "2024-10-05T16:42:00Z",
+            assignee: "陈洁"
+          },
+          {
+            id: "ORD-1004",
+            customer: "钱六",
+            status: "pending",
+            amount: 1280,
+            channel: "线上商城",
+            createdAt: "2024-10-13T08:10:00Z",
+            assignee: "王强"
+          },
+          {
+            id: "ORD-1005",
+            customer: "孙七",
+            status: "cancelled",
+            amount: 640,
+            channel: "APP 下单",
+            createdAt: "2024-09-29T13:55:00Z",
+            assignee: "赵敏"
+          },
+          {
+            id: "ORD-1006",
+            customer: "周八",
+            status: "processing",
+            amount: 420,
+            channel: "小程序",
+            createdAt: "2024-10-10T10:25:00Z",
+            assignee: "陈洁"
+          }
+        ]
+      },
+      columns: [
+        {
+          id: "order-id",
+          label: "订单号",
+          dataIndex: "id",
+          sortable: true
+        },
+        {
+          id: "customer",
+          label: "客户",
+          dataIndex: "customer"
+        },
+        {
+          id: "status",
+          label: "状态",
+          dataIndex: "status",
+          renderType: "badge",
+          valueMapping: [
+            { value: "pending", label: "待处理", variant: "warning" },
+            { value: "processing", label: "处理中", variant: "secondary" },
+            { value: "completed", label: "已完成", variant: "success" },
+            { value: "cancelled", label: "已取消", variant: "destructive" }
+          ]
+        },
+        {
+          id: "assignee",
+          label: "负责人",
+          dataIndex: "assignee"
+        },
+        {
+          id: "channel",
+          label: "渠道",
+          dataIndex: "channel"
+        },
+        {
+          id: "amount",
+          label: "金额",
+          dataIndex: "amount",
+          renderType: "currency",
+          currency: {
+            currency: "CNY"
+          },
+          align: "right"
+        },
+        {
+          id: "createdAt",
+          label: "下单时间",
+          dataIndex: "createdAt",
+          renderType: "date",
+          sortable: true,
+          dateFormat: {
+            options: {
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit"
+            }
+          }
+        }
+      ],
+      selectable: true,
+      pagination: {
+        defaultPageSize: 5,
+        pageSizeOptions: [5, 10, 20]
+      },
+      emptyState: {
+        title: "暂无订单数据",
+        description: "尝试调整筛选条件或稍后再试"
+      }
+    },
+    filterForms: [
+      {
+        id: "order-filters",
+        type: "filter-form",
+        filters: [
+          {
+            id: "keyword",
+            label: "关键词",
+            field: "customer",
+            type: "text",
+            placeholder: "客户名称 / 订单号"
+          },
+          {
+            id: "status",
+            label: "状态",
+            field: "status",
+            type: "select",
+            defaultValue: "pending",
+            options: [
+              { label: "待处理", value: "pending" },
+              { label: "处理中", value: "processing" },
+              { label: "已完成", value: "completed" },
+              { label: "已取消", value: "cancelled" }
+            ]
+          },
+          {
+            id: "channel",
+            label: "渠道",
+            field: "channel",
+            type: "select",
+            placeholder: "选择来源渠道",
+            options: [
+              { label: "线上商城", value: "线上商城" },
+              { label: "APP 下单", value: "APP 下单" },
+              { label: "线下门店", value: "线下门店" },
+              { label: "小程序", value: "小程序" }
+            ]
+          },
+          {
+            id: "createdAtRange",
+            label: "下单时间",
+            field: "createdAt",
+            type: "date-range",
+            defaultValue: {
+              from: "2024-10-01",
+              to: "2024-10-31"
+            }
+          }
+        ]
+      }
+    ],
+    submissionForms: [
+      {
+        id: "assign-order-form",
+        type: "submission-form",
+        form: {
+          title: "分配订单",
+          submitLabel: "确定分配",
+          cancelLabel: "取消",
+          fields: [
+            {
+              id: "assignee",
+              label: "负责人",
+              type: "select",
+              placeholder: "请选择负责人",
+              required: true,
+              defaultValue: "王强",
+              options: [
+                { label: "王强", value: "王强" },
+                { label: "赵敏", value: "赵敏" },
+                { label: "陈洁", value: "陈洁" }
+              ]
+            },
+            {
+              id: "note",
+              label: "备注说明",
+              type: "textarea",
+              placeholder: "可填写分配说明（可选）",
+              rows: 3
+            }
+          ]
+        }
+      },
+      {
+        id: "bulk-close-form",
+        type: "submission-form",
+        form: {
+          title: "批量关闭订单",
+          submitLabel: "提交关闭",
+          cancelLabel: "取消",
+          fields: [
+            {
+              id: "reason",
+              label: "关闭原因",
+              type: "textarea",
+              placeholder: "请输入关闭原因",
+              required: true,
+              rows: 3
+            }
+          ]
+        }
+      }
+    ],
+    operations: [
+      {
+        id: "refresh-orders",
+        type: "data-operation",
+        scope: "global",
+        label: "刷新数据",
+        intent: "secondary",
+        behavior: {
+          type: "api",
+          method: "POST",
+          endpoint: "/api/orders/refresh",
+          successMessage: "刷新任务已触发"
+        }
+      },
+      {
+        id: "create-order",
+        type: "data-operation",
+        scope: "global",
+        label: "创建订单",
+        intent: "default",
+        behavior: {
+          type: "link",
+          url: "https://example.com/orders/create",
+          target: "_blank"
+        }
+      },
+      {
+        id: "assign-order",
+        type: "data-operation",
+        scope: "row",
+        label: "分配",
+        intent: "ghost",
+        formRef: "assign-order-form",
+        behavior: {
+          type: "api",
+          method: "POST",
+          endpoint: "/api/orders/{{row.id}}/assign",
+          bodyTemplate: {
+            assignee: "{{formValues.assignee}}",
+            note: "{{formValues.note}}"
+          },
+          successMessage: "订单已更新负责人"
+        }
+      },
+      {
+        id: "view-order",
+        type: "data-operation",
+        scope: "row",
+        label: "详情",
+        intent: "link",
+        behavior: {
+          type: "link",
+          url: "https://example.com/orders/{{row.id}}",
+          target: "_blank"
+        }
+      },
+      {
+        id: "mark-completed",
+        type: "data-operation",
+        scope: "row",
+        label: "标记完成",
+        intent: "secondary",
+        confirm: {
+          title: "确认标记该订单为完成？"
+        },
+        behavior: {
+          type: "api",
+          method: "POST",
+          endpoint: "/api/orders/{{row.id}}/complete",
+          successMessage: "订单已标记为完成"
+        }
+      },
+      {
+        id: "bulk-close",
+        type: "data-operation",
+        scope: "bulk",
+        label: "批量关闭",
+        intent: "destructive",
+        requiresSelection: true,
+        confirm: {
+          title: "确定关闭选中的订单吗？",
+          description: "操作提交后将无法撤销。"
+        },
+        formRef: "bulk-close-form",
+        behavior: {
+          type: "api",
+          method: "POST",
+          endpoint: "/api/orders/bulk-close",
+          bodyTemplate: {
+            orderIds: "{{rowIds}}",
+            reason: "{{formValues.reason}}"
+          },
+          successMessage: "批量关闭任务已提交"
+        }
+      }
+    ]
+  }
+};
+
 export const exampleAdminConfig: AdminTablePageConfig = {
   type: "admin-table",
   title: "用户管理",

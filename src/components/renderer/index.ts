@@ -2,13 +2,18 @@ export { LowCodePage } from "./low-code-page";
 
 export type {
   AdminPageConfig,
+  AdminTableModelsConfig,
   AdminTablePageConfig,
   BulkActionConfig,
+  DataOperationModel,
   DataSourceConfig,
   FilterConfig,
+  FilterFormModel,
   GlobalActionConfig,
   RowActionConfig,
-  TableColumnConfig
+  SubmissionFormModel,
+  TableColumnConfig,
+  TableViewModel
 } from "../../types/blocks/admin-table";
 export type {
   ChartConfig,
