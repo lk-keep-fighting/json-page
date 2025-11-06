@@ -56,7 +56,8 @@ export const exampleAdminConfig: AdminTablePageConfig = {
         url: "https://example.com/users/create",
         target: "_blank"
       }
-    }, {
+    },
+    {
       id: "refresh-data",
       label: "刷新数据",
       scope: "global",
@@ -66,6 +67,60 @@ export const exampleAdminConfig: AdminTablePageConfig = {
         method: "POST",
         endpoint: "/api/users/refresh",
         successMessage: "刷新成功"
+      }
+    },
+    {
+      id: "send-notification",
+      label: "发送通知",
+      scope: "global",
+      intent: "secondary",
+      behavior: {
+        type: "api",
+        method: "POST",
+        endpoint: "/api/notifications/send",
+        bodyTemplate: {
+          title: "{{formValues.title}}",
+          message: "{{formValues.message}}",
+          target: "{{formValues.target}}"
+        },
+        successMessage: "通知已发送"
+      },
+      form: {
+        title: "发送系统通知",
+        description: "通知将发送给所选角色的全部用户。",
+        submitLabel: "立即发送",
+        fields: [
+          {
+            id: "title",
+            label: "通知标题",
+            type: "text",
+            placeholder: "请输入通知标题",
+            required: true,
+            maxLength: 50
+          },
+          {
+            id: "message",
+            label: "通知内容",
+            type: "textarea",
+            placeholder: "请输入通知内容",
+            required: true,
+            rows: 4,
+            maxLength: 200
+          },
+          {
+            id: "target",
+            label: "通知对象",
+            type: "select",
+            placeholder: "请选择通知对象",
+            required: true,
+            defaultValue: "all",
+            options: [
+              { label: "全部用户", value: "all" },
+              { label: "管理员", value: "admin" },
+              { label: "运营", value: "operator" }
+            ]
+          }
+        ]
       }
     }
   ],
@@ -181,6 +236,46 @@ export const exampleAdminConfig: AdminTablePageConfig = {
           method: "POST",
           endpoint: "/api/users/{{row.id}}/disable",
           successMessage: "停用成功"
+        }
+      },
+      {
+        id: "adjust-balance",
+        label: "调整余额",
+        scope: "row",
+        intent: "outline",
+        behavior: {
+          type: "api",
+          method: "POST",
+          endpoint: "/api/users/{{row.id}}/adjust-balance",
+          bodyTemplate: {
+            amount: "{{formValues.amount}}",
+            reason: "{{formValues.reason}}"
+          },
+          successMessage: "余额调整成功"
+        },
+        form: {
+          title: "调整用户余额",
+          description: "输入正数增加余额，负数表示扣减。",
+          submitLabel: "提交调整",
+          fields: [
+            {
+              id: "amount",
+              label: "调整金额",
+              type: "number",
+              placeholder: "请输入金额",
+              required: true,
+              step: 0.01
+            },
+            {
+              id: "reason",
+              label: "调整原因",
+              type: "textarea",
+              placeholder: "请输入调整原因",
+              required: true,
+              rows: 3,
+              maxLength: 200
+            }
+          ]
         }
       }
     ],
