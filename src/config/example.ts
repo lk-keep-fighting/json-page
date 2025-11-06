@@ -214,6 +214,48 @@ export const exampleModelDrivenConfig: AdminTablePageConfig = {
               ]
             },
             {
+              id: "deadline",
+              label: "处理截止时间",
+              type: "datetime",
+              placeholder: "请选择处理截止时间",
+              required: true,
+              defaultValue: "2024-10-15T18:00"
+            },
+            {
+              id: "priority",
+              label: "优先级",
+              type: "radio",
+              required: true,
+              defaultValue: "normal",
+              options: [
+                { label: "低", value: "low" },
+                { label: "正常", value: "normal" },
+                { label: "高", value: "high" }
+              ]
+            },
+            {
+              id: "notify",
+              label: "发送通知",
+              type: "checkbox",
+              defaultValue: true,
+              trueLabel: "已启用通知",
+              falseLabel: "未启用通知"
+            },
+            {
+              id: "channels",
+              label: "通知渠道",
+              type: "multi-select",
+              required: true,
+              defaultValue: ["email", "inbox"],
+              maxSelections: 2,
+              description: "最多选择两个渠道",
+              options: [
+                { label: "邮件", value: "email" },
+                { label: "短信", value: "sms" },
+                { label: "站内信", value: "inbox" }
+              ]
+            },
+            {
               id: "note",
               label: "备注说明",
               type: "textarea",
@@ -238,6 +280,19 @@ export const exampleModelDrivenConfig: AdminTablePageConfig = {
               placeholder: "请输入关闭原因",
               required: true,
               rows: 3
+            },
+            {
+              id: "closeDate",
+              label: "执行日期",
+              type: "date",
+              required: true,
+              defaultValue: "2024-10-16"
+            },
+            {
+              id: "closeTime",
+              label: "执行时间",
+              type: "time",
+              defaultValue: "09:30"
             }
           ]
         }
@@ -282,6 +337,10 @@ export const exampleModelDrivenConfig: AdminTablePageConfig = {
           endpoint: "/api/orders/{{row.id}}/assign",
           bodyTemplate: {
             assignee: "{{formValues.assignee}}",
+            deadline: "{{formValues.deadline}}",
+            priority: "{{formValues.priority}}",
+            notify: "{{formValues.notify}}",
+            channels: "{{formValues.channels}}",
             note: "{{formValues.note}}"
           },
           successMessage: "订单已更新负责人"
@@ -333,7 +392,9 @@ export const exampleModelDrivenConfig: AdminTablePageConfig = {
           endpoint: "/api/orders/bulk-close",
           bodyTemplate: {
             orderIds: "{{rowIds}}",
-            reason: "{{formValues.reason}}"
+            reason: "{{formValues.reason}}",
+            scheduleDate: "{{formValues.closeDate}}",
+            scheduleTime: "{{formValues.closeTime}}"
           },
           successMessage: "批量关闭任务已提交"
         }
