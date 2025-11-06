@@ -1,10 +1,13 @@
 import { LowCodePage } from "./components/renderer";
-import { exampleAdminConfig } from "./config/example";
+import { exampleAdminConfig, exampleChartConfig } from "./config/example";
 
 export default function App() {
   return (
     <div className="min-h-screen bg-muted/40 py-10">
-      <LowCodePage config={exampleAdminConfig} />
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
+        <LowCodePage config={exampleChartConfig} />
+        <LowCodePage config={exampleAdminConfig} />
+      </div>
     </div>
   );
 }
