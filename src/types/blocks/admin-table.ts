@@ -93,7 +93,18 @@ export interface ActionConfirmation {
   description?: string;
 }
 
-export type ActionFormFieldType = "text" | "number" | "textarea" | "select";
+export type ActionFormFieldType =
+  | "text"
+  | "password"
+  | "number"
+  | "textarea"
+  | "select"
+  | "radio"
+  | "checkbox"
+  | "multi-select"
+  | "date"
+  | "time"
+  | "datetime";
 
 export interface ActionFormFieldBase {
   id: string;
@@ -102,11 +113,11 @@ export interface ActionFormFieldBase {
   placeholder?: string;
   description?: string;
   required?: boolean;
-  defaultValue?: Primitive;
+  defaultValue?: Primitive | Primitive[];
 }
 
 export interface TextFormFieldConfig extends ActionFormFieldBase {
-  type: "text";
+  type: "text" | "password";
   maxLength?: number;
 }
 
@@ -128,11 +139,38 @@ export interface SelectFormFieldConfig extends ActionFormFieldBase {
   options: SelectFilterOption[];
 }
 
+export interface RadioFormFieldConfig extends ActionFormFieldBase {
+  type: "radio";
+  options: SelectFilterOption[];
+}
+
+export interface CheckboxFormFieldConfig extends ActionFormFieldBase {
+  type: "checkbox";
+  trueLabel?: string;
+  falseLabel?: string;
+}
+
+export interface MultiSelectFormFieldConfig extends ActionFormFieldBase {
+  type: "multi-select";
+  options: SelectFilterOption[];
+  maxSelections?: number;
+}
+
+export interface DateFormFieldConfig extends ActionFormFieldBase {
+  type: "date" | "time" | "datetime";
+  min?: string;
+  max?: string;
+}
+
 export type ActionFormFieldConfig =
   | TextFormFieldConfig
   | TextareaFormFieldConfig
   | NumberFormFieldConfig
-  | SelectFormFieldConfig;
+  | SelectFormFieldConfig
+  | RadioFormFieldConfig
+  | CheckboxFormFieldConfig
+  | MultiSelectFormFieldConfig
+  | DateFormFieldConfig;
 
 export interface ActionFormConfig {
   title?: string;
